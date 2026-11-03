@@ -35,7 +35,7 @@ export {}
 
 /*
 import { createClient } from '@supabase/supabase-js'
-import type { CatalogYear, ComicSeries, OwnershipMap } from '../types'
+import type { CatalogYear, ComicSeries, InsertCollection, OwnershipMap } from '../types'
 import type { StorageAdapter } from './adapter'
 
 const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY)
@@ -71,6 +71,16 @@ export class SupabaseAdapter implements StorageAdapter {
   async saveComicsSeries(series: ComicSeries[]): Promise<void> {
     // 削除の反映が必要なら、差分を取って delete も行う
     const { error } = await supabase.from('comics_series').upsert(series.map((s) => ({ id: s.id, data: s })))
+    if (error) throw error
+  }
+  // 折込冊子は comics_series と同じ形のテーブル（inserts）で保存できる
+  async loadInserts(): Promise<Record<string, InsertCollection>> {
+    const { data, error } = await supabase.from('inserts').select('id,data')
+    if (error) throw error
+    return Object.fromEntries(data.map((r) => [r.id, r.data as InsertCollection]))
+  }
+  async saveInserts(inserts: Record<string, InsertCollection>): Promise<void> {
+    const { error } = await supabase.from('inserts').upsert(Object.values(inserts).map((c) => ({ id: c.id, data: c })))
     if (error) throw error
   }
 }

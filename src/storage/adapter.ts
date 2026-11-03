@@ -1,4 +1,4 @@
-import type { CatalogYear, ComicSeries, OwnershipMap } from '../types'
+import type { CatalogYear, ComicSeries, InsertCollection, OwnershipMap } from '../types'
 
 /**
  * 保存先の抽象化。
@@ -18,4 +18,8 @@ export interface StorageAdapter {
   /** ジャンプコミックスのシリーズ一覧（刊行データ側）。所持記録とは別キーに保存 */
   loadComicsSeries(): Promise<ComicSeries[]>
   saveComicsSeries(series: ComicSeries[]): Promise<void>
+
+  /** 折込冊子コレクション（コレクションID → 最新号）。所持記録とは別キーに保存 */
+  loadInserts(): Promise<Record<string, InsertCollection>>
+  saveInserts(inserts: Record<string, InsertCollection>): Promise<void>
 }

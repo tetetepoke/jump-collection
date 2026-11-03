@@ -1,4 +1,4 @@
-export function Legend({ unit }: { unit: '号' | '巻' }) {
+export function Legend({ unit, hideProvisional }: { unit: '号' | '巻'; hideProvisional?: boolean }) {
   return (
     <div className="space-y-1.5 rounded-xl bg-mist px-4 py-3 text-[11px] leading-relaxed text-sub">
       <p>
@@ -6,7 +6,7 @@ export function Legend({ unit }: { unit: '号' | '巻' }) {
         タップで<strong className="text-ink">所持済み</strong>（○）、もう一度タップで<strong className="text-ink">未所持</strong>
       </p>
       <p>長押しで「未確認」に戻せます。未確認は未所持とはみなしません。</p>
-      <p>点線の枠は暫定データ（実在未確認）の{unit}です。</p>
+      {!hideProvisional && <p>点線の枠は暫定データ（実在未確認）の{unit}です。</p>}
     </div>
   )
 }

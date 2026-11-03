@@ -76,6 +76,22 @@ export interface CollectionItem {
   /** 読み上げ・確認ダイアログ用（例: "3・4号", "DRAGON BALL 12巻"） */
   label: string
   provisional: boolean
+  /** sub を数字の上に表示する（例: "Vol."） */
+  subOnTop?: boolean
 }
 
-export type CollectionKind = 'magazine' | 'comics'
+// ─────────────────────────────────────────────
+// 折込冊子（コミックスニュース・ジャンパラ・ジャンコミスクープ）
+// Vol.1〜最新号を並べてチェックするだけ。最新号は追加で増やせる。
+// 所持記録は "ins:<コレクションID>:<Vol番号>" のIDで共通の OwnershipMap に保存する。
+// ─────────────────────────────────────────────
+
+export interface InsertCollection {
+  id: string
+  /** 最新号（Vol.1〜count を表示） */
+  count: number
+  updatedAt: string
+}
+
+/** 'magazine' | 'comics' | 'ins:<コレクションID>' */
+export type CollectionKind = 'magazine' | 'comics' | `ins:${string}`

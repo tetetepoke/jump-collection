@@ -2,9 +2,10 @@ import type { Stats } from '../hooks/useCollection'
 import type { Verification } from '../types'
 
 interface Props {
-  verification: Verification
+  /** 省略すると暫定/確定の表示欄を出さない */
+  verification?: Verification
   source?: string
-  provisionalNote: string
+  provisionalNote?: string
   stats: Stats
 }
 
@@ -48,6 +49,7 @@ export function StatsPanel({ verification, source, provisionalNote, stats }: Pro
         </div>
       </dl>
 
+      {verification && (
       <div className="mt-4 border-t border-line pt-3 text-xs leading-relaxed">
         {provisional ? (
           <p className="text-sub">
@@ -65,6 +67,7 @@ export function StatsPanel({ verification, source, provisionalNote, stats }: Pro
           </p>
         )}
       </div>
+      )}
     </section>
   )
 }

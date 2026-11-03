@@ -71,12 +71,15 @@ const IssueTile = memo(function IssueTile({ item, status, onTap, onLongPress }: 
           ○
         </span>
       )}
+      {item.subOnTop && (
+        <span className={`mb-1 text-[10px] leading-none ${status === 'owned' ? 'text-white/85' : 'text-sub'}`}>{item.sub}</span>
+      )}
       <span className={`tabular px-1 text-center font-serif leading-none ${small ? 'text-[15px]' : item.main.length > 2 ? 'text-[19px]' : 'text-[26px]'}`}>
         {item.main}
       </span>
-      <span className={`mt-1 text-[10px] leading-none ${status === 'owned' ? 'text-white/85' : 'text-sub'}`}>
-        {item.sub}
-      </span>
+      {!item.subOnTop && (
+        <span className={`mt-1 text-[10px] leading-none ${status === 'owned' ? 'text-white/85' : 'text-sub'}`}>{item.sub}</span>
+      )}
       {status === 'not_owned' && (
         <span className="absolute bottom-1 text-[9px] leading-none tracking-wider text-sub">未所持</span>
       )}

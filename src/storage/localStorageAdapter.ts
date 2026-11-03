@@ -1,9 +1,10 @@
-import type { CatalogYear, ComicSeries, OwnershipMap } from '../types'
+import type { CatalogYear, ComicSeries, InsertCollection, OwnershipMap } from '../types'
 import type { StorageAdapter } from './adapter'
 
 export const OWNERSHIP_KEY = 'jump-collection:ownership:v1'
 export const CATALOG_KEY = 'jump-collection:catalog-overrides:v1'
 export const COMICS_KEY = 'jump-collection:comics-series:v1'
+export const INSERTS_KEY = 'jump-collection:inserts:v1'
 
 function read<T>(key: string, fallback: T): T {
   try {
@@ -41,5 +42,11 @@ export class LocalStorageAdapter implements StorageAdapter {
   }
   async saveComicsSeries(series: ComicSeries[]): Promise<void> {
     write(COMICS_KEY, series)
+  }
+  async loadInserts(): Promise<Record<string, InsertCollection>> {
+    return read<Record<string, InsertCollection>>(INSERTS_KEY, {})
+  }
+  async saveInserts(inserts: Record<string, InsertCollection>): Promise<void> {
+    write(INSERTS_KEY, inserts)
   }
 }
