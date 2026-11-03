@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { CollectionKind } from './types'
 import { FIRST_YEAR, LAST_YEAR, YEARS } from './data/catalog'
 import { useCollection } from './hooks/useCollection'
@@ -47,6 +47,18 @@ export default function App() {
   useEffect(() => writeLS(YEAR_KEY, String(year)), [year])
   useEffect(() => writeLS(KIND_KEY, kind), [kind])
 
+  // タブ切り替え時だけ、選んだタブが見えるようにタブ列を横方向にスクロールする（縦には動かさない）
+  const tabRow = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const row = tabRow.current
+    const btn = row?.querySelector<HTMLElement>('[aria-selected="true"]')
+    if (!row || !btn) return
+    const left = btn.offsetLeft - row.offsetLeft
+    if (left < row.scrollLeft || left + btn.offsetWidth > row.scrollLeft + row.clientWidth) {
+      row.scrollTo({ left: left - 20, behavior: 'smooth' })
+    }
+  }, [kind])
+
   const notify = useCallback((msg: string) => {
     setToast(msg)
     window.setTimeout(() => setToast((t) => (t === msg ? null : t)), 2200)
@@ -87,7 +99,7 @@ export default function App() {
           </button>
         </div>
 
-        <div className="-mx-5 mt-4 overflow-x-auto px-5 [scrollbar-width:none]" role="tablist" aria-label="コレクションの切り替え">
+        <div ref={tabRow} className="-mx-5 mt-4 overflow-x-auto px-5 [scrollbar-width:none]" role="tablist" aria-label="コレクションの切り替え">
           <div className="flex w-max gap-1.5">
             {(
               [
@@ -100,9 +112,6 @@ export default function App() {
                 key={k}
                 role="tab"
                 aria-selected={kind === k}
-                ref={(el) => {
-                  if (el && kind === k) el.scrollIntoView({ block: 'nearest', inline: 'nearest' })
-                }}
                 onClick={() => setKind(k)}
                 className={`h-10 whitespace-nowrap rounded-full border px-4 text-[13px] tracking-wide transition-colors ${
                   kind === k ? 'border-ink bg-ink font-semibold text-white' : 'border-line text-sub'
